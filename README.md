@@ -5,6 +5,7 @@
 1、openwrt安装ffserver、ffmpeg、rtl_sdr
 
 2、创建/etc/ffserver.conf
+
 HttpPort 1234
 HttpBindAddress 0.0.0.0
 MaxHTTPConnections 200
@@ -28,11 +29,13 @@ CustomLog -
 </Stream>
 
 3、创建start_mms.sh
+
 #!/bin/ash
 ffserver -f /etc/config/ffserver.conf &
 rtl_fm -f 99.3M -M fm -s 320k -o 4 -A fast -r 44100 -l 0 -E deemp -g 49.6 - | ffmpeg -f s16le -ac 1 -i pipe:0 -acodec libmp3lame -vol 256 http://127.0.0.1:1234/feed2.ffm &
 
 4、创建stop_mms.sh
+
 #!/bin/ash
 ps | grep rtl_fm | grep -v "grep" | awk '{print $1}' | xargs kill -9
 ps | grep ffserver | grep -v "grep" | awk '{print $1}' | xargs kill -9
